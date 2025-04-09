@@ -1,13 +1,12 @@
 <mujoco model="Bipedal_V2">
     <option gravity="0 0 -9.81" />
+    <compiler angle="degree" meshdir="meshes/" autolimits="true" />
+    <!-- discardvisual="True"  -->
 
-    <!-- meshdir define the direction to mesh(.stl) files -->
-    <compiler angle="degree" meshdir="meshes/" autolimits="true" /> 
+    <option timestep="0.001"></option>
+    <statistic extent="0.3" center="0.3 0 0" meansize=".03" />
 
-    <option timestep="0.001"> </option>  <!-- set time step to 1ms-->
-    <statistic extent="0.3" center="0.3 0 0" meansize=".03" /> <!-- dont care-->
-
-    <contact> <!-- set contact between the foots and ground-->
+    <contact>
         <pair geom1="ground" geom2="Left_Foot" solimp="0.95 0.95 0.0001" solref="0.0001 1" />
         <pair geom1="ground" geom2="Right_Foot" solimp="0.95 0.95 0.0001" solref="0.0001 1" />
     </contact>
@@ -15,8 +14,7 @@
     <default>
         <geom type="mesh" />
     </default>
-
-    <default> <!-- for visual, not important-->
+    <default>
         <default class="visual">
             <geom contype="0" conaffinity="0" group="0" density="0" rgba="0.5 0.5 0.5 1" />
         </default>
@@ -28,9 +26,9 @@
         </default>
     </default>
 
-    <default> <!-- set properties for the actuators-->
+    <default>
         <default class="AK8064_actuator">
-            <joint damping="0.02" armature="0.231" frictionloss="0.5" />
+            <joint damping="0.02" armature="0.231" frictionloss="0.25" />
         </default>
 
         <default class="AK7010_actuator">
@@ -38,7 +36,7 @@
         </default>
 
         <default class="AK109_actuator">
-            <joint damping="0.015" armature="0.00812" frictionloss="0.5" />
+            <joint damping="0.015" armature="0.00812" frictionloss="0.25" />
         </default>
 
         <default class="AK606_actuator">
@@ -46,195 +44,138 @@
         </default>
     </default>
 
-    <!--   Define the mesh files below -->
-    <!--   Fusion outputs meshes with mm units by default, therefore, scale to 0.001-->
+    <!--   Fusion outputs meshes with mm units by default, but must be converted to m in MuJoCo, hence
+    the scaling   -->
     <asset>
         <!--   Torso  -->
-        <mesh name="Torso"
-            file="Torso.stl"
-            scale="0.001 0.001 0.001" />
-        <mesh name="Pelvis"
-            file="Pelvis.stl"
-            scale="0.001 0.001 0.001" />
+        <mesh name="Torso" file="Torso.stl" scale="0.001 0.001 0.001" />
+        <mesh name="Pelvis" file="Pelvis.stl" scale="0.001 0.001 0.001" />
         <!--   Waist  -->
-        <mesh name="Waist_Pitch"
-            file="Waist_Pitch.stl"
-            scale="0.001 0.001 0.001" />
-        <mesh name="Waist_Roll"
-            file="Waist_Roll.stl"
-            scale="0.001 0.001 0.001" />
+        <mesh name="Waist_Pitch" file="Waist_Pitch.stl" scale="0.001 0.001 0.001" />
+        <mesh name="Waist_Roll" file="Waist_Roll.stl" scale="0.001 0.001 0.001" />
         <!--   Leg stl file  -->
-        <mesh name="HipLink1"
-            file="Hip_Link1.stl"
-            scale="0.001 0.001 0.001" />
-        <mesh name="HipLink2"
-            file="Hip_Link2.stl"
-            scale="0.001 0.001 0.001" />
-        <mesh name="Right_Thigh"
-            file="Right_Thigh_Straight.stl"
-            scale="0.001 0.001 0.001" />
-        <mesh name="Left_Thigh"
-            file="Left_Thigh_Straight.stl"
-            scale="0.001 0.001 0.001" />
-        <mesh name="Shank"
-            file="Shank.stl"
-            scale="0.001 0.001 0.001" />
+        <mesh name="HipLink1" file="Hip_Link1.stl" scale="0.001 0.001 0.001" />
+        <mesh name="HipLink2" file="Hip_Link2.stl" scale="0.001 0.001 0.001" />
+        <mesh name="Thigh" file="Thigh.stl" scale="0.001 0.001 0.001" />
+        <mesh name="Left_Shank" file="Left_Shank.stl" scale="0.001 0.001 0.001" />
+        <mesh name="Right_Shank" file="Right_Shank.stl" scale="0.001 0.001 0.001" />
         <!--   Ankle and Foot stl file  -->
-        <mesh name="Ankle_Joint"
-            file="Ankle_Joint.stl"
-            scale="0.001 0.001 0.001" />
-        <mesh name="Foot"
-            file="Foot_v1.stl"
-            scale="0.001 0.001 0.001" />
+        <mesh name="Ankle_Joint" file="Ankle_Joint.stl" scale="0.001 0.001 0.001" />
+        <mesh name="Foot" file="Foot.stl" scale="0.001 0.001 0.001" />
     </asset>
-
-    <!-- for visual, not important-->
     <visual>
         <headlight diffuse="0.6 0.6 0.6" ambient="0.3 0.3 0.3" specular="0 0 0" />
         <rgba haze="0.15 0.25 0.35 1" />
         <global azimuth="-130" elevation="-20" />
     </visual>
 
-    <!-- for visual, not important-->
     <asset>
-        <texture builtin="gradient" height="100" rgb1=".4 .5 .6" rgb2="0 0 0" type="skybox"
-            width="100" />
-        <texture name="texplane" type="2d" builtin="checker" rgb1=".2 .3 .4" rgb2=".1 0.15 0.2"
-            width="100" height="100" />
-        <material name="MatPlane" reflectance="0.5" texture="texplane" texrepeat="1 1"
-            texuniform="true" />         
+        <texture builtin="gradient" height="100" rgb1=".4 .5 .6" rgb2="0 0 0" type="skybox" width="100" />
+        <texture name="texplane" type="2d" builtin="checker" rgb1=".2 .3 .4" rgb2=".1 0.15 0.2" width="100" height="100" />
+        <material name="MatPlane" reflectance="0.5" texture="texplane" texrepeat="1 1" texuniform="true" />
     </asset>
 
 
-    <!-- Start configuring the Model's Kinematic Tree here-->
+
     <worldbody>
-        <!--  Ground/Floor -->
-        <geom name="ground" pos="0 0 0" size="5 5 0.05" type="plane" material = "MatPlane"
-            friction= "1 1 0.1" condim="3" conaffinity="1" contype="1" group="2"
-            rgba="0.8 0.9 0.8 1" />
-        
-        <light cutoff="1000" diffuse="1 1 1" dir="-0 0 -1.3" directional="true" exponent="1"
-            pos="0 0 1.3" specular=".1 .1 .1" castshadow="false" /> <!-- for visual -->
+        <geom name="ground" pos="0 0 0" size="5 5 0.05" type="plane" material = "MatPlane" friction= "1 1 0.1" condim="3" conaffinity="1" contype="1" group="2" rgba="0.8 0.9 0.8 1" />
+
+        <light cutoff="1000" diffuse="1 1 1" dir="-0 0 -1.3" directional="true" exponent="1" pos="0 0 1.3" specular=".1 .1 .1" castshadow="false" />
+        <!--   Projection of the Pelvis Ceter on the Ground -->
+        <site name="ZMP_est" pos="0 0 0" size="0.02" rgba="0 1 0 1"/>
+        <site name="ZMP_ref" pos="0 0 0" size="0.02" rgba="1 0 0 1"/>
+        <site name="COM_ref" pos="0 0 0" size="0.02" rgba="0 0 1 1"/>
 
         <!--   Torso -->
-        <body name="Torso" pos="0 0 0.83" euler="0 0 -90" >            
+        <body name="Torso" pos="0 0 0.81" euler="0 0 -90">
             <geom type="mesh" class="transparent" mesh="Torso" />
-           <freejoint name="root" /> <!--   comment out this joint if we want to fix the torso -->
-            <inertial pos="0 0 162.6E-3" mass="5.208" fullinertia="0.2985E-1 0.294E-1 0.31475E-1 0 0 0" />
-            <site name="IMU" type = "box" pos="0 0 -0.1" size="0.01 0.01 0.01" rgba="1 0 0 1"/> <!--   this is to assign/locate an IMU sensor -->
 
-            <!--   Pelvis, fixed to the torso  -->
-            <body name="Pelvis" pos="0 0 0.013" euler="0 0 -90" >
-                <geom type="mesh" class="visual" mesh="Pelvis" pos="0 0 0" name = "Pelvis"/>
-                <inertial pos="0 0 -82.9E-3" mass="5.0425"
-                    fullinertia="3.273E-2 1.921E-2 3.257E-2 2934.62E-9 85859.4E-9 -1312.919E-9" />
+            <freejoint name="root"/>
+            <inertial pos="0 0 -8.692E-3" mass="5.803" fullinertia="1.005E-1 1.343E-1 6.599E-2 -605.112E-9 9367.185E-9 -10103.262E-9"/>
+            <camera name="track" pos="0 1 1" xyaxes="1 0 0 0 1 2" mode="track"/>
+            <site name="IMU" type = "box" pos="0 0 0.05" euler="0 0 90" size="0.01 0.01 0.01" rgba="1 0 0 1"/>
 
-                <!--   Right leg kinematic chain  -->
-                <body name="Right_Hip_link01" pos="0 0.170807 -0.128278" euler="-105 0 -90">  <!-- euler = "-90/105 0 -90" for normal/offset perpendicular axis -->
+            <!--   Right leg kinematic chain  -->
+            <body name="Right_Hip_link01" pos="90.397E-3 0 -81.608E-3" euler="0 90 90"> <!--   "0 105 90"  -->
+                <!--   Hip link 1, set euler angle to rotate the body   -->
+                <joint type="hinge" name="Right_Hip_Pitch" axis="0 0 -1" pos="0 0 -0.075" range="-90 90" class = "AK109_actuator"/>
+                <geom type="mesh" class="visual" mesh="HipLink1" />
+                <inertial pos="5.274E-3 0.583E-3 61.205E-3" mass="1.770" fullinertia="3.213E-3 3.368E-3 2.277E-3 5536E-9 -1.28E-4 2470.492E-9" />
+
+                <body name="Right_Hip_link02" pos="-52E-3 0 75E-3" euler="90 -90 -90"> <!--   "90 -90 -75"  -->
                     <!--   Hip link 1, set euler angle to rotate the body   -->
-                    <joint type="hinge" name="Right_Hip_Flex" axis="0 0 -1" pos="0 0 -0.075"
-                        range="-180 180" class = "AK109_actuator"/>
-                    <geom type="mesh" class="visual" mesh="HipLink1" />
-                    <inertial pos="0.000612 -0.004802 -0.013967" mass="1.792078"
-                        fullinertia="0.003453 0.003288 0.002332 -0.63755E-5 -0.0975E-5 1.202E-4" />
+                    <joint type="hinge" name="Right_Hip_Roll" axis="0 0 -1" pos="0 0 0" range="-90 90" class = "AK109_actuator"/>
+                    <geom type="mesh" class="visual" mesh="HipLink2" />
+                    <inertial pos="0.03E-3 71.886E-3 -51.989E-3" mass="1.117" fullinertia="2.793E-3 1.705E-3 2.101E-3 -3650.985E-9 -807.627E-9 7163.808E-9" />
 
-                    <!--   Hip link 2 -->
-                    <body name="Right_Hip_link02" pos="0 0 0" euler="90 0 75">   <!-- euler = "90 0 90/75" for normal/offset perpendicular axis -->                     
-                         <joint type="hinge" name="Right_Hip_Abd" axis="0 0 1" pos="0 0 0"
-                            range="-50 50" class = "AK7010_actuator"/> 
-                        <geom type="mesh" class="visual" mesh="HipLink2" />
-                        <inertial pos="-0.037E-3 72.145E-3 0.037E-3" mass="1.1418658"
-                            fullinertia="3.056E-3 2.040E-3 2.335E-3 -0.758513E-6 -0.1156E-5 0.758095E-6" />
+                    <body name="Right_Thigh" pos="0 124.5E-3 -52E-3" euler="90 0 90">
+                        <!--   Hip link 1, set euler angle to rotate the body   -->
+                        <joint type="hinge" name="Right_Hip_Yaw" axis="0 0 1" pos="0 0 0" range="-90 90" class = "AK7010_actuator"/>
+                        <geom type="mesh" class="visual" mesh="Thigh" />
+                        <inertial pos="0.025E-3 -13.667E-3 -160.484E-3" mass="1.9177" fullinertia="1.2E-2 1.245E-2 2.07E-3 2061.057E-9 3103.541E-9 -1E-3" />
 
-                        <!--   Thigh -->
-                        <body name="Right_Thigh" pos="0 0.1395 0" euler="90 0 90">
-                            <joint type="hinge" name="Right_Hip_Int" axis="0 0 -1"
-                                pos="0 0 0" range="-180 180" class = "AK7010_actuator"/>
+                        <body name="Right_Shank" pos="0 21E-3 -200E-3" euler="-90 0 90">
+                            <!--   Hip link 1, set euler angle to rotate the body   -->
+                            <joint type="hinge" name="Right_Knee" axis="0 0 -1" pos="0 0 0" range="-90 90" class = "AK109_actuator"/>
+                            <geom type="mesh" class="visual" mesh="Right_Shank" />
+                            <inertial pos="161.205E-3 9.33E-3 -17.018E-3" mass="1.669" fullinertia=" 1.369E-3 1.512E-2 1.493E-2 6.644E-4 8.379E-4 12203.356E-9"/>
 
-                            <geom type="mesh" class="visual" mesh="Right_Thigh" />
+                            <body name="Right_Ankle_Joint" pos="337E-3 27.1E-3 -17.1E-3" euler="90 0 -90">
+                                <!--   Hip link 1, set euler angle to rotate the body   -->
+                                <joint type="hinge" name="Right_Ankle_Roll" axis="0 0 -1" pos="0 0 0" range="-90 90" class = "AK606_actuator"/>
+                                <geom type="mesh" class="visual" mesh="Ankle_Joint" />
+                                <inertial pos="0 0 27E-3" mass="0.113" fullinertia="14352.686E-9 19761.129E-9 9953.085E-9 0 0 0" />
 
-                            <inertial pos="5.715E-3 -14.644E-3 -72.428E-3" mass="1.757"
-                                fullinertia="8.511E-3 8.797E-3 2.111E-3 -1.514E-4 7.111E-4 6.054E-4" />
-                            <!--  Shank -->
-                            <body name="Right_Shank" pos="0 0 -0.2" euler="90 0 0">
-                                <joint type="hinge" name="Right_Knee" axis="0 0 -1"
-                                    pos="0 0 0" range="-180 180" class = "AK109_actuator"/>
-                                <geom type="mesh" class="visual" mesh="Shank" />
-                                <inertial pos="0.018E-3 -106.616E-3 0.0" mass="1.5667"
-                                    fullinertia="7.64E-3 1.897E-3 6.7E-3 24195.303E-9 321.924E-9 2097.433E-9" />
-                                <!--  Ankle joint -->
-                                <body name="Right_Ankle_Joint" pos="0 -0.321695 0"
-                                    euler="90 0 0">
-                                    <joint type="hinge" name="Right_Roll_Ankle" axis="1 0 0"
-                                        pos="0 0 0" range="-180 180" class = "AK606_actuator"/>
-                                    <geom type="mesh" class="visual"
-                                        mesh="Ankle_Joint" />
-                                    <inertial pos="0 0 0" mass="0.116"
-                                        fullinertia="0.25355E-4 0.16344E-4 0.16467E-4 0.0 0.0 0.0" />
-                                    <!--  Foot -->
-                                    <body name="Right_Foot" pos="0 0 0"
-                                        euler="90 0 90">
-                                        <joint type="hinge" name="Right_Pitch_Ankle"
-                                            axis="0 0 1" pos="0 0 0" range="-180 180" class = "AK606_actuator"/>
-                                        <geom name = "Right_Foot" type="mesh" class="collision"
-                                            mesh="Foot" friction= "1.1 1.1 0.1" />
-                                        <inertial mass="0.35" pos="35.156E-3 -8.811E-3 0"
-                                            fullinertia="0.8202E-3 1.764E-4 0.7512E-3 44169.168E-9 -1.081E-9 -1.66E-9" />                               
-                                    </body>
+                                <body name="Right_Foot" pos="-15E-3 0 27E-3" euler="90 90 0">
+                                    <!--   Hip link 1, set euler angle to rotate the body   -->
+                                    <joint type="hinge" name="Right_Ankle_Pitch" axis="0 0 1" pos="0 0 0" range="-90 90" class = "AK606_actuator"/>
+                                    <geom name = "Right_Foot" type="mesh" class="visual" mesh="Foot" />
+                                    <inertial pos="26.518E-3 -11.518E-3 16.827E-3" mass="0.28" fullinertia="4.266E-4 1.520E-4 3.89E-4 28868.676E-9 6621.189E-9 -5893.661E-9" />
+                                    <site name="Right_Force_Torque_Sensor" type = "box" pos="30E-3 0 15E-3" euler="0 -90 -90" size="0.015 0.015 0.015" rgba="1 0 0 1"/>
                                 </body>
                             </body>
                         </body>
                     </body>
                 </body>
-                <!--   Left leg kinematic chain  -->
-                <body name="Left_Hip_link01" pos="0 -0.170807 -0.128278" euler="105 0 90">
+            </body>
+
+            <!--   Left leg kinematic chain  -->
+            <body name="Left_Hip_link01" pos="-90.397E-3 0 -81.608E-3" euler="0 -90 -90"> <!--   "0 -105 -90"  -->
+                <!--   Hip link 1, set euler angle to rotate the body   -->
+                <joint type="hinge" name="Left_Hip_Pitch" axis="0 0 1" pos="0 0 -0.075" range="-90 90" class = "AK109_actuator"/>
+                <geom type="mesh" class="visual" mesh="HipLink1" />
+               <inertial pos="5.274E-3 0.583E-3 61.205E-3" mass="1.770" fullinertia="3.213E-3 3.368E-3 2.277E-3 5536E-9 -1.28E-4 2470.492E-9" />
+
+                <body name="Left_Hip_link02" pos="-52E-3 0 75E-3" euler="90 -90 -90"> <!--   "90 -90 -75"  -->
                     <!--   Hip link 1, set euler angle to rotate the body   -->
-                    <joint type="hinge" name="Left_Hip_Flex" axis="0 0 1" pos="0 0 -0.075"
-                        range="-90 90" class = "AK109_actuator"/>
-                    <geom type="mesh" class="visual" mesh="HipLink1" />
-                    <inertial pos="0.000612 -0.004802 -0.013967" mass="1.792078"
-                        fullinertia="0.003453 0.003288 0.002332 -0.63755E-5 -0.0975E-5 1.202E-4" />
-                    <body name="Left_Hip_link02" pos="0 0 0" euler="90 0 75">
-                        <!--   Hip link 2 -->
-                        <joint type="hinge" name="Left_Hip_Abd" axis="0 0 -1" pos="0 0 0"
-                            range="-30 60" class = "AK7010_actuator"/>
-                        <geom type="mesh" class="visual" mesh="HipLink2" />
-                        <inertial pos="-0.037E-3 72.145E-3 0.037E-3" mass="1.1418658"
-                            fullinertia="3.056E-3 2.040E-3 2.335E-3 -0.758513E-6 -0.1156E-5 0.758095E-6" />
-                        <!--   Thigh -->
-                        <body name="Left_Thigh" pos="0 0.1395 0" euler="90 0 -90">
-                            <joint type="hinge" name="Left_Hip_Int" axis="0 0 1"
-                                pos="0 0 0" range="-45 45" class = "AK7010_actuator"/>
-                            <geom type="mesh" class="visual" mesh="Left_Thigh" />
-                            <inertial pos="5.715E-3 -14.644E-3 -72.428E-3" mass="1.757"
-                                fullinertia="8.511E-3 8.797E-3 2.111E-3 -1.514E-4 7.111E-4 6.054E-4" />
-                            <!--  Shank -->
-                            <body name="Left_Shank" pos="0 0 -0.2" euler="90 0 0">
-                                <joint type="hinge" name="Left_Knee" axis="0 0 -1"
-                                    pos="0 0 0" range="-10 120" class = "AK109_actuator"/>
-                                <geom type="mesh" class="visual" mesh="Shank"/>
-                                <inertial pos="0.018E-3 -106.616E-3 0.0" mass="1.5667"
-                                    fullinertia="7.64E-3 1.897E-3 6.7E-3 24195.303E-9 321.924E-9 2097.433E-9" />
-                                <!--  Ankle joint -->
-                                <body name="Left_Ankle_Joint" pos="0 -0.321695 0"
-                                    euler="90 0 0">
-                                    <joint type="hinge" name="Left_Roll_Ankle"
-                                        axis="1 0 0" pos="0 0 0" range="-180 180" class = "AK606_actuator"/>
-                                    <geom type="mesh" class="visual"
-                                        mesh="Ankle_Joint" />
-                                    <inertial pos="0 0 0" mass="0.116"
-                                        fullinertia="16260.707E-9 9027.185E-9 17297.275E-9 0.0 0.0 0.0" />
-                                    <!--  Foot  -->
-                                    <body name="Left_Foot" pos="0 0 0"
-                                        euler="90 0 90">
-                                        <joint type="hinge" name="Left_Pitch_Ankle"
-                                            axis="0 0 1" pos="0 0 0" range="-180 180"
-                                            actuatorfrcrange="-30 45" class = "AK606_actuator"/>
-                                        <geom name = "Left_Foot" type="mesh" class="collision"
-                                            mesh="Foot" friction = "1.1 1.1 0.1"/>
-                                        <inertial mass="0.35" pos="35.156E-3 -8.811E-3 0"
-                                            fullinertia="0.8202E-3 1.764E-4 0.7512E-3 44169.168E-9 -1.081E-9 -1.66E-9" />
-                                    </body>
+                    <joint type="hinge" name="Left_Hip_Roll" axis="0 0 1" pos="0 0 0" range="-90 90" class = "AK109_actuator"/>
+                    <geom type="mesh" class="visual" mesh="HipLink2" />
+                    <inertial pos="0.03E-3 71.886E-3 -51.989E-3" mass="1.117" fullinertia="2.793E-3 1.705E-3 2.101E-3 -3650.985E-9 -807.627E-9 7163.808E-9" />
+
+                    <body name="Left_Thigh" pos="0 124.5E-3 -52E-3" euler="90 0 90">
+                        <!--   Hip link 1, set euler angle to rotate the body   -->
+                        <joint type="hinge" name="Left_Hip_Yaw" axis="0 0 1" pos="0 0 0" range="-90 90" class = "AK7010_actuator"/>
+                        <geom type="mesh" class="visual" mesh="Thigh" />
+                        <inertial pos="0.025E-3 -13.667E-3 -160.484E-3" mass="1.9177" fullinertia="1.2E-2 1.245E-2 2.07E-3 2061.057E-9 3103.541E-9 -1E-3" />
+
+                        <body name="Left_Shank" pos="0 21E-3 -200E-3" euler="90 0 180">
+                            <!--   Hip link 1, set euler angle to rotate the body   -->
+                            <joint type="hinge" name="Left_Knee" axis="0 0 -1" pos="0 0 0" range="-90 90" class = "AK109_actuator"/>
+                            <geom type="mesh" class="visual" mesh="Left_Shank" />
+                            <inertial pos="-9.33E-3 161.205E-3 17.018E-3" mass="1.669" fullinertia="1.512E-2 1.369E-3 1.493E-2 6.644E-4 12203.356E-9 -8.379E-4"/>
+
+                            <body name="Left_Ankle_Joint" pos="-27.1E-3 337E-3 20.9E-3" euler="0 90 0">
+                                <!--   Hip link 1, set euler angle to rotate the body   -->
+                                <joint type="hinge" name="Left_Ankle_Roll" axis="0 0 -1" pos="0 0 0" range="-90 90" class = "AK606_actuator"/>
+                                <geom type="mesh" class="visual" mesh="Ankle_Joint" />
+                                 <inertial pos="0 0 27E-3" mass="0.113" fullinertia="14352.686E-9 19761.129E-9 9953.085E-9 0 0 0" />
+
+                                <body name="Left_Foot" pos="-15E-3 0 27E-3" euler="90 90 0">
+                                    <!--   Hip link 1, set euler angle to rotate the body   -->
+                                    <joint type="hinge" name="Left_Ankle_Pitch" axis="0 0 1" pos="0 0 0" range="-90 90" class = "AK606_actuator"/>
+                                    <geom name = "Left_Foot" type="mesh" class="visual" mesh="Foot" />
+                                    <inertial pos="26.518E-3 -11.518E-3 16.827E-3" mass="0.28" fullinertia="4.266E-4 1.520E-4 3.89E-4 28868.676E-9 6621.189E-9 -5893.661E-9" />
+                                    <site name="Left_Force_Torque_Sensor" type = "box" pos="30E-3 0 15E-3" euler="0 -90 -90" size="0.015 0.015 0.015" rgba="1 0 0 1"/>
                                 </body>
                             </body>
                         </body>
@@ -244,9 +185,8 @@
         </body>
         <!--   End of 2 legs  -->
     </worldbody>
-    <!--   End of Model's Kinematic Tree  -->
 
-    <contact> <!--   Exclude other contact, to reduce computation, dont care other contacts  -->
+    <contact>
         <exclude body1="Torso" body2="Right_Hip_link01" />
         <exclude body1="Torso" body2="Right_Hip_link02" />
         <exclude body1="Torso" body2="Left_Thigh" />
@@ -267,27 +207,32 @@
         <exclude body1="Right_Shank" body2="Left_Shank" />
     </contact>
 
-    <!--   Define actuator for each joint -->
-    <actuator>
-        <motor name="Right_Hip_Flex_m" joint="Right_Hip_Flex" ctrlrange="-120 120" />        
-        <motor name="Right_Hip_Abd_m" joint="Right_Hip_Abd" ctrlrange="-45 45" />        
-        <motor name="Right_Hip_Int_m" joint="Right_Hip_Int" ctrlrange="-24 24" />
-        <motor name="Right_Knee_m" joint="Right_Knee" ctrlrange="-60 60" />
-        <motor name="Right_Ank_Pitch_m" joint="Right_Pitch_Ankle" ctrlrange="-30 30" />
-        <motor name="Right_Ank_Roll_m" joint="Right_Roll_Ankle" ctrlrange="-30 30" />
 
-        <motor name="Left_Hip_Flex_m" joint="Left_Hip_Flex" ctrlrange="-120 120" />
-        <motor name="Left_Hip_Abd_m" joint="Left_Hip_Abd" ctrlrange="-45 45" />
-        <motor name="Left_Hip_Int_m" joint="Left_Hip_Int" ctrlrange="-24 24" />
+    <actuator>
+        <motor name="Right_Hip_Pitch_m" joint="Right_Hip_Pitch" ctrlrange="-120 120" />        
+        <motor name="Right_Hip_Roll_m" joint="Right_Hip_Roll" ctrlrange="-45 45" />        
+        <motor name="Right_Hip_Yaw_m" joint="Right_Hip_Yaw" ctrlrange="-24 24" />
+        <motor name="Right_Knee_m" joint="Right_Knee" ctrlrange="-60 60" />
+        <motor name="Right_Ank_Pitch_m" joint="Right_Ankle_Pitch" ctrlrange="-30 30" />
+        <motor name="Right_Ank_Roll_m" joint="Right_Ankle_Roll" ctrlrange="-30 30" />
+
+        <motor name="Left_Hip_Pitch_m" joint="Left_Hip_Pitch" ctrlrange="-120 120" />
+        <motor name="Left_Hip_Roll_m" joint="Left_Hip_Roll" ctrlrange="-45 45" />
+        <motor name="Left_Hip_Yaw_m" joint="Left_Hip_Yaw" ctrlrange="-24 24" />
         <motor name="Left_Knee_m" joint="Left_Knee" ctrlrange="-60 60" />
-        <motor name="Left_Ank_Pitch_m" joint="Left_Pitch_Ankle" ctrlrange="-30 30" />
-        <motor name="Left_Ank_Roll_m" joint="Left_Roll_Ankle" ctrlrange="-30 30" />
+        <motor name="Left_Ank_Pitch_m" joint="Left_Ankle_Pitch" ctrlrange="-30 30" />
+        <motor name="Left_Ank_Roll_m" joint="Left_Ankle_Roll" ctrlrange="-30 30" />
     </actuator>
 
-    <sensor> <!--   optional, add sensor if needed, we can get sensor's values in the code -->
+    <sensor>
         <accelerometer name="accel" site="IMU"/>
         <gyro name="gyro" site="IMU"/>
-        <velocimeter name="velmeter" site="IMU"/> 
-    </sensor>
+        <velocimeter name="velmeter" site="IMU"/>
 
+        <force name="left_foot_force" site="Left_Force_Torque_Sensor"/>
+        <torque name="left_foot_torque" site="Left_Force_Torque_Sensor"/>
+
+        <force name="right_foot_force" site="Right_Force_Torque_Sensor"/>
+        <torque name="right_foot_torque" site="Right_Force_Torque_Sensor"/>
+    </sensor>
 </mujoco>
