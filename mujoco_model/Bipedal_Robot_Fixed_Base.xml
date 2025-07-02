@@ -56,7 +56,7 @@
         <mesh name="Left_Link3_Thigh" file="Left_Link3_Thigh.stl" scale="0.001 0.001 0.001" />
         <mesh name="Left_Link4_Shank" file="Left_Link4_Shank.stl" scale="0.001 0.001 0.001" />
         <mesh name="Left_Link5_AnkleRoll" file="Left_Link5_AnkleRoll.stl" scale="0.001 0.001 0.001" />
-        <mesh name="Left_Link6_Foot" file="Left_Link6_Foot.stl" scale="0.001 0.001 0.001" />
+        <mesh name="Left_Link6_Foot" file="Left_Link6_Foot_v2.stl" scale="0.001 0.001 0.001" />
 
         <!--   Right stl file  -->
         <mesh name="Right_Link1_Hip" file="Right_Link1_Hip.stl" scale="0.001 0.001 0.001" />
@@ -64,7 +64,7 @@
         <mesh name="Right_Link3_Thigh" file="Right_Link3_Thigh.stl" scale="0.001 0.001 0.001" />
         <mesh name="Right_Link4_Shank" file="Right_Link4_Shank.stl" scale="0.001 0.001 0.001" />
         <mesh name="Right_Link5_AnkleRoll" file="Right_Link5_AnkleRoll.stl" scale="0.001 0.001 0.001" />
-        <mesh name="Right_Link6_Foot" file="Right_Link6_Foot.stl" scale="0.001 0.001 0.001" />
+        <mesh name="Right_Link6_Foot" file="Left_Link6_Foot_v2.stl" scale="0.001 0.001 0.001" />
 
     </asset>
     <visual>
@@ -93,7 +93,7 @@
         <!--   Link0_Torso -->
         <body name="Link0_Torso" pos="0 0 0.81" euler="0 0 0">
             <geom type="mesh" class="visual" mesh="Link0_Torso" />
-            <freejoint name="root"/>
+            <!-- <freejoint name="root"/> -->
             <inertial pos="0.022E-3 0.011E-3 -9.359E-3" mass="5.721" fullinertia="1.338E-1 1.019E-1 6.278E-2 -7542.256E-9 8599.288E-9 8566.243E-9"/>
             <camera name="track" pos="1 0 1.5" xyaxes="0.78 -0.63 0 0.27 0.33 0.9"/>
             <site name="IMU" type = "box" pos="0 0 0" euler="0 0 90" size="0.01 0.01 0.01" rgba="1 0 0 1"/>
